@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ثبت‌نام</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body dir="rtl"> <!-- این ویژگی برای راست‌چین کردن صفحه است -->
+
+<!-- نوار هدایت -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold text-primary" href="#">🔥welcome </a>
+    </div>
+</nav>
+
+<!-- فرم ثبت‌نام -->
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card p-4 shadow-lg form-box w-100" style="max-width: 450px;"> 
+        <h2 class="text-center text-primary">ثبت‌نام</h2>
+
+        {% if error %}
+        <div class="alert alert-danger text-center">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" onsubmit="return validateForm()">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label">نام کاربری:</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">رمز عبور:</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">تکرار رمز عبور:</label>
+                <input type="password" class="form-control" id="password2" name="password2" required>
+                <div id="error-message" class="text-danger mt-2"></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">ثبت‌نام</button>
+        </form>
+
+        <p class="mt-3 text-center">
+            <a href="{% url 'login_page' %}" class="text-decoration-none">قبلاً حساب دارید؟ ورود</a>
+        </p>
+    </div>
+</div>
+
+<!-- استایل -->
+<style>
+    body {
+        background: linear-gradient(135deg, #00c6ff, #0072ff);
+        font-family: 'Arial', sans-serif;
+    }
+
+    .form-box {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        width: 100%;
+        max-width: 450px;
+        animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .navbar {
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .fade-in {
+        opacity: 0;
+        animation: fadeIn 1.5s forwards;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<!-- جاوا اسکریپت برای اعتبارسنجی -->
+<script>
+    function validateForm() {
+        let pass1 = document.getElementById("password").value;
+        let pass2 = document.getElementById("password2").value;
+        let errorMessage = document.getElementById("error-message");
+
+        if (pass1 !== pass2) {
+            errorMessage.innerText = "رمز عبور و تکرار آن باید یکسان باشند!";
+            return false;
+        }
+        return true;
+    }
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
