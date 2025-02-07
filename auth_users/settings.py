@@ -50,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'users.middlewares.GatewayLoggingMiddleware',
 ]
 
 ROOT_URLCONF = 'auth_users.urls'
@@ -132,6 +133,7 @@ from datetime import timedelta
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'users.authentication.GatewayJWTAuthentication',
     ),
 }
 
@@ -141,9 +143,33 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
+    'AUTH_HEADER_TYPES': ('Bearer',),  # این باید مقدار 'Bearer' داشته باشد
+    'AUTH_COOKIE': 'access_token',
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': 'your-secret-key',  # تغییر به کلید امن شما
 }
 
 CSRF_COOKIE_NAME = "csrftoken"
 CSRF_COOKIE_HTTPONLY = False
+
+
+# تنظیمات لاگ‌ها
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'gateway.log',  # این فایل لاگ‌ها رو ذخیره می‌کنه
+        },
+    },
+    'loggers': {
+        'gateway_logger': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
+

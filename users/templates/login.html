@@ -29,7 +29,7 @@
         </div>
         {% endif %}
 
-        <form method="POST">
+        <form id="login-form" method="POST">
             {% csrf_token %}
 
             <div class="mb-3">
@@ -83,8 +83,69 @@
     }
 </style>
 
+<script>
+    document.getElementById("login-form").addEventListener("submit", async function(event) {
+        event.preventDefault(); // جلوگیری از ارسال فرم به روش معمولی
+    
+        let username = document.getElementById("username").value;
+        let password = document.getElementById("password").value;
+    
+        try {
+            let response = await fetch("/api/login/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({ username: username, password: password })
+            });
+
+            let result = await response.json();
+            console.log(response.status);  // چاپ وضعیت پاسخ در کنسول
+
+            // بررسی وضعیت پاسخ
+            if (response.ok) {
+                // ذخیره توکن‌ها در localStorage
+                localStorage.setItem("access_token", result.access_token);
+                localStorage.setItem("refresh_token", result.refresh_token);
+                
+                alert("ورود موفقیت‌آمیز بود!");
+                // هدایت به صفحه خانه
+                window.location.href = "{% url 'home_page' %}";
+            } else {
+                alert(result.msg || "ورود ناموفق بود!");
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert("خطا در ارسال درخواست!");
+        }
+    });
+
+    // در اینجا، به هنگام بارگذاری هر درخواست به سرور، توکن را به هدر اضافه می‌کنیم.
+    document.addEventListener("DOMContentLoaded", function() {
+        const token = localStorage.getItem("access_token");
+
+        if (token) {
+            // هدر Authorization را اضافه می‌کنیم
+            fetch('/api/protected/', {
+                method: 'GET',
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    });
+</script>
+
 </body>
 </html>
+
+
 
 
 

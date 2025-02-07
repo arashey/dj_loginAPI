@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RegisterPageView, LoginPageView, HomePageView, RegisterView, LoginView, ProtectedView, LogoutView, HomePageApiView
+from .views import RegisterPageView, LoginPageView, HomePageView, RegisterView, LoginView, ProtectedView, LogoutView, HomePageApiView, LogListView
 
 urlpatterns = [
     # صفحات HTML
@@ -14,6 +14,7 @@ urlpatterns = [
     path("api/protected/", ProtectedView.as_view(), name="protected_api"),  # صفحه محافظت‌شده
     path("api/logout/", LogoutView.as_view(), name="logout_api"), 
      path("api/home/", HomePageApiView.as_view(), name="home_api"),  # خروج از سیستم
+  path('api/logs/', LogListView.as_view(), name='log_list'),
 ]
 
 
